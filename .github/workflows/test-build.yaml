@@ -23,6 +23,8 @@ jobs:
           python-version: 3.12.1
       - name: Install Python script package dependencies
         run: pip install -r scripts/python/requirements.txt
+      - name: Run Python unit tests
+        run: python tests/python/user_data_json_unit_tests.py
       - name: Create directory to store user data JSON files 
         run: mkdir -p data/json
       - name: Create root user data JSON file 
