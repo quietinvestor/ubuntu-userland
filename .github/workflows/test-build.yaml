@@ -43,3 +43,36 @@ jobs:
           --secret id=root_data,src=data/json/root_data.json \
           --secret id=user_data,src=data/json/user_data.json \
           --tag ubuntu-userland:test .
+      - name: Run test container
+        run: |
+          docker container run \
+          --name ubuntu-userland \
+          --detach \
+          --tty \
+          ubuntu-userland:test
+      - name: Test root password
+        run: |
+          root_password_test=$( \
+          docker container exec -i ubuntu-userland \
+          bash -c \
+          "echo ${root_password} | su - root -c whoami") ; \
+          if [[ $root_password_test = "root" ]] ; then \
+            exit 0 ; \
+          else \
+            exit 1 ; \
+          fi
+      - name: Test user password
+        run: |
+          user_password_test=$( \
+          docker container exec -i ubuntu-userland \
+          bash -c \
+          "echo ${user_password} | su - ${user_name} -c whoami") ; \
+          if [[ $user_password_test = "$user_name" ]] ; then \
+            exit 0 ; \
+          else \
+            exit 1 ; \
+          fi
+      - name: Remove running container image
+        run: docker container rm --force ubuntu-userland
+      - name: Remove container image
+        run: docker image rm ubuntu-userland:test
