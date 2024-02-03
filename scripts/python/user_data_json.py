@@ -3,9 +3,11 @@ import json
 import pyescrypt
 import secrets
 
-def shadow_password_hash(password):
+def salt_bytes(byte_num):
+    return secrets.token_bytes(byte_num)
 
-    salt_bytes = secrets.token_bytes(32)
+def shadow_password_hash(salt_bytes, password):
+
     password_bytes = str.encode(password)
 
     hasher = pyescrypt.Yescrypt(n=2 ** 16, r=8, p=1, mode=pyescrypt.Mode.MCF)
@@ -14,11 +16,11 @@ def shadow_password_hash(password):
     return hashed.decode("utf-8")
 
 
-def user_data_json(username, password):
+def user_data_json(username, salt_bytes, password):
 
     user_data = {
         "user": username,
-        "password_hash": shadow_password_hash(password)
+        "password_hash": shadow_password_hash(salt_bytes, password)
     }
 
     user_data_json = json.dumps(user_data)
@@ -42,5 +44,5 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    user_data = user_data_json(args.username, args.password)
+    user_data = user_data_json(args.username, salt_bytes(32), args.password)
     print(user_data)
