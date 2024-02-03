@@ -25,13 +25,4 @@ USER 1001
 
 WORKDIR $HOME
 
-#RUN apt install -y cmake curl file gettext git ninja-build unzip && \
-#    git clone https://github.com/neovim/neovim && \
-#    cd neovim && \
-#    git checkout v0.9.5 && \
-#    make CMAKE_BUILD_TYPE=Release && \
-#    cd build && \
-#    cpack -G DEB && \
-#    dpkg -i nvim-linux64.deb
-
 ENTRYPOINT ["/bin/bash"]
