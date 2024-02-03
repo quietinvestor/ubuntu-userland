@@ -4,10 +4,41 @@ import pyescrypt
 import secrets
 
 def salt_bytes(byte_num):
+    """
+    Generate a random salt of byte_num byte length.
+
+    Parameters
+    ----------
+    byte_num : int
+        Byte length of random salt.
+
+    Returns
+    -------
+    bytes
+        Random salt.
+
+    """
     return secrets.token_bytes(byte_num)
 
 def shadow_password_hash(salt_bytes, password):
+    """
+    Generate a password hash for use in Linux /etc/shadow.
 
+    Uses yescrypt hashing algorithm.
+
+    Parameters
+    ----------
+    salt_bytes : bytes
+        Salt.
+    password : str
+        Password.
+
+    Returns
+    -------
+    str
+        yescrypt password hash.
+
+    """
     password_bytes = str.encode(password)
 
     hasher = pyescrypt.Yescrypt(n=2 ** 16, r=8, p=1, mode=pyescrypt.Mode.MCF)
@@ -17,7 +48,24 @@ def shadow_password_hash(salt_bytes, password):
 
 
 def user_data_json(username, salt_bytes, password):
+    """
+    Generate a JSON object with a username and a password hash.
 
+    Parameters
+    ----------
+    username : str
+        Username.
+    salt_bytes : bytes
+        Salt.
+    password : str
+        Password.
+
+    Returns
+    -------
+    str
+        JSON object with username and password hash.
+
+    """
     user_data = {
         "user": username,
         "password_hash": shadow_password_hash(salt_bytes, password)
