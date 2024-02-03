@@ -23,6 +23,8 @@ jobs:
           python-version: 3.12.1
       - name: Install Python script package dependencies
         run: pip install -r scripts/python/requirements.txt
+      - name: Add PYTHONPATH
+        run: echo "PYTHONPATH=$PWD/scripts/python" >> "$GITHUB_ENV"
       - name: Run Python unit tests
         run: python tests/python/user_data_json_unit_tests.py
       - name: Create directory to store user data JSON files 
