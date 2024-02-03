@@ -40,6 +40,6 @@ jobs:
       - name: Build container image
         run: |
           docker image build \
-          --secret id=root_data,src=root_data.json \
-          --secret id=user_data,src=user_data.json \
+          --secret id=root_data,src=data/json/root_data.json \
+          --secret id=user_data,src=data/json/user_data.json \
           --tag ubuntu-userland:test .
