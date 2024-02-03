@@ -1,0 +1,45 @@
+name: Test build
+on:
+  push:
+    paths-ignore:
+      - '.gitignore'
+      - 'LICENSE'
+      - 'README.md'
+  workflow_dispatch:
+jobs:
+  test-deploy:
+    runs-on: ubuntu-22.04
+    environment: test
+    env:
+      root_password: ${{ secrets.ROOT_PASSWORD }}
+      user_name: ${{ secrets.USER_NAME }}
+      user_password: ${{ secrets.USER_PASSWORD }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Setup Python
+        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+        with:
+          python-version: 3.12.1
+      - name: Install Python script package dependencies
+        run: pip install -r scripts/python/requirements.txt
+      - name: Create directory to store user data JSON files 
+        run: mkdir -p data/json
+      - name: Create root user data JSON file 
+        run: |
+          python scripts/python/user_data_json.py \
+          --user=root \
+          --password="$root_password" \
+          > data/json/root_data.json
+      - name: Create non-root user data JSON file 
+        run: |
+          python scripts/python/user_data_json.py \
+          --user="$user_name" \
+          --password="$user_password" \
+          > data/json/user_data.json
+      - name: Build container image
+        run: |
+          docker image build \
+          --secret id=root_data,src=root_data.json \
+          --secret id=user_data,src=user_data.json \
+          --tag ubuntu-userland:test .
