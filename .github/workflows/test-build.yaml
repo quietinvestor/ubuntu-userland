@@ -22,7 +22,9 @@ jobs:
         with:
           python-version: 3.12.1
       - name: Install Python script package dependencies
-        run: pip install -r scripts/python/requirements.txt
+        run: |
+          python -m pip install -r scripts/python/requirements-base.txt && \
+          python -m pip install -r scripts/python/requirements.txt
       - name: Add PYTHONPATH
         run: echo "PYTHONPATH=$PWD/scripts/python" >> "$GITHUB_ENV"
       - name: Run Python unit tests
