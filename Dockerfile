@@ -21,8 +21,10 @@ RUN --mount=type=secret,id=user_data,required=true \
       --uid=1001 \
       "$user_name"
 
-USER 1001
+ARG username
 
-WORKDIR $HOME
+USER $username
+
+WORKDIR /home/$username
 
 ENTRYPOINT ["/bin/bash"]
