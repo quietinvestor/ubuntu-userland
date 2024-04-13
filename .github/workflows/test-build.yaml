@@ -14,6 +14,7 @@ jobs:
       root_password: ${{ secrets.ROOT_PASSWORD }}
       user_name: ${{ secrets.USER_NAME }}
       user_password: ${{ secrets.USER_PASSWORD }}
+      user_id: ${{ secrets.USER_ID }}
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -46,6 +47,7 @@ jobs:
       - name: Build container image
         run: |
           docker image build \
+          --build-arg userid="$user_id" \
           --build-arg username="$user_name" \
           --secret id=root_data,src=data/json/root_data.json \
           --secret id=user_data,src=data/json/user_data.json \

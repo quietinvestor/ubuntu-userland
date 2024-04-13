@@ -10,6 +10,8 @@ RUN --mount=type=secret,id=root_data,required=true \
       --password=$root_password_hash \
       root
 
+ARG userid
+
 RUN --mount=type=secret,id=user_data,required=true \
     export user_name=$(jq -r ".user" /run/secrets/user_data) && \
     export user_password_hash=$(jq -r ".password_hash" /run/secrets/user_data) && \
@@ -18,7 +20,7 @@ RUN --mount=type=secret,id=user_data,required=true \
       --home-dir=/home/"$user_name" \
       --password="$user_password_hash" \
       --shell=/bin/bash \
-      --uid=1001 \
+      --uid=$userid \
       "$user_name"
 
 ARG username
