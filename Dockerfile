@@ -1,8 +1,8 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 RUN apt update
 
-RUN apt install -y jq=1.6-2.1ubuntu3
+RUN apt install -y jq=1.7.1-3build1
 
 RUN --mount=type=secret,id=root_data,required=true \
     export root_password_hash=$(jq -r ".password_hash" /run/secrets/root_data) && \
